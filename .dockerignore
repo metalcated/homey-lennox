@@ -3,3 +3,10 @@ node_modules
 .git
 .env
 *.tgz
+.github/
+.homey/
+.env.*
+*.log
+__pycache__/
+*.pyc
+.DS_Store

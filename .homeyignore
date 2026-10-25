@@ -6,3 +6,15 @@ VALIDATION.md
 package-lock.json
 .git/
 .homeybuild/
+.github/
+.homey/
+.gitignore
+.dockerignore
+Dockerfile
+.env
+.env.*
+*.tgz
+*.log
+__pycache__/
+*.pyc
+.DS_Store

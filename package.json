@@ -22,5 +22,13 @@
   },
   "devDependencies": {
     "homey": "4.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metalcated/homey-lennox.git"
+  },
+  "homepage": "https://github.com/metalcated/homey-lennox#readme",
+  "bugs": {
+    "url": "https://github.com/metalcated/homey-lennox/issues"
   }
 }

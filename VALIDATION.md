@@ -1,5 +1,11 @@
 # Lennox validation
 
+## Standalone repository migration
+
+On October 25, 2026, the Lennox source moved into its own [metalcated/homey-lennox repository](https://github.com/metalcated/homey-lennox) with its application history retained. The move keeps app ID `com.metalcated.lennox`, version **0.1.7**, and runtime behavior unchanged. It does not reinstall the app or change live Homey services. The earlier sections below preserve the validation evidence from the original source location. New bugs and feature requests belong in the [dedicated issue tracker](https://github.com/metalcated/homey-lennox/issues).
+
+The extracted application tree matched the original subtree before migration edits. All 14 runtime files and 18 test files stayed byte-identical. From the new repository root, Node 22 and Node 24 each passed all 224 tests with the reviewed vendor fixture and no skips. Official Homey debug validation, build, and the real installation-archive check passed; the archive contained 247 entries and 1,743,872 unpacked bytes. Repository metadata and CI files are excluded from the installed app. These checks used an emulated upload endpoint and did not install or restart the live app.
+
 ## Version 0.1.7 native targets and responsive queue
 
 The complete suite passes **213/213 tests** on Node 22 and Node 24 with the reviewed vendor bundle. Official Homey validation, build, real archive, and rejected-upload checks pass. The user's native thermostat comparison demonstrated the inactive cooling target moving from 76°F to 77°F as Heat changed to 74°F, with Heat mode retained. The new planner matches that behavior and confirms both changed targets. The scoped web layer batches quick presses after 600ms while remaining responsive during requests; native dragging keeps its one-second debounce and ordering. See [native evidence, queued controls, deployment and rollback](docs/QUEUED-CONTROLS.md).
@@ -126,7 +132,7 @@ The existing developer app's stdout was retrieved through the verified read-only
 
 ## Live acceptance and rollback
 
-1. For this installation, run `bash homey-apps/lennox/scripts/install.sh --via-foreman` for future updates. The existing CLI authentication is retained in its Docker volume. Select the self-hosted Homey.
+1. For this installation, run `bash scripts/install.sh --via-foreman` for future updates. The existing CLI authentication is retained in its Docker volume. Select the self-hosted Homey.
 2. Pause only the Lennox child bridge in Homebridge before pairing a thermostat in Homey.
 3. Pair zones read-only and compare all displayed readings, modes, and state with the thermostat. Verify Homey restart/reopen and address repair.
 4. When ready for control testing, select Manual at the thermostat, turn off Away, and record original values. Enable writes for one zone, make a small reversible change, confirm it at the device, then restore the original value.

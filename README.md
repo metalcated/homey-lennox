@@ -2,6 +2,10 @@
 
 A native Homey SDK v3 app for Lennox iComfort thermostats with the compatible local LAN API. Targets Homey Pro and Homey Self-Hosted Server **12.9.0 or newer**. Version **0.1.7** is a private test release, not an App Store publication or a claim of Lennox certification.
 
+Source: [metalcated/homey-lennox](https://github.com/metalcated/homey-lennox). Report bugs and request features through [GitHub issues](https://github.com/metalcated/homey-lennox/issues).
+
+This standalone repository retains app ID `com.metalcated.lennox`, version **0.1.7**, and the existing runtime behavior. The source move preserves the installed app, paired devices, settings, and existing installer authentication.
+
 ## What it provides
 
 - Manual IP/hostname pairing with zone selection and stable serial/zone identities.
@@ -19,10 +23,12 @@ Version 0.1.1 also verifies read-only backend discovery on the user's S40. It su
 
 ## Install without local npm dependencies
 
-From the repository checkout, run:
+Clone the standalone repository and run its installer:
 
 ```sh
-bash homey-apps/lennox/scripts/install.sh
+git clone https://github.com/metalcated/homey-lennox.git
+cd homey-lennox
+bash scripts/install.sh
 ```
 
 Or run that script using its absolute path from any directory. It builds and tests a container, asks you to select your Homey, and persistently installs the app using the official Homey CLI. It does not use `--clean` or remove existing app data. Your Homey account may need to authorize the CLI. Open the displayed link and, if required, paste its code **into your terminal only**. Credentials are stored in a dedicated Docker volume outside this repository.
@@ -30,7 +36,7 @@ Or run that script using its absolute path from any directory. It builds and tes
 For the installation on `iot-mgmt` reached through `foreman`, use this Mac command:
 
 ```sh
-bash homey-apps/lennox/scripts/install.sh --via-foreman
+bash scripts/install.sh --via-foreman
 ```
 
 It opens a temporary localhost-only SSH tunnel, verifies that the endpoint belongs to your selected Homey, and uploads over that route. The tunnel closes when installation finishes; the installed app does not depend on it. `HOMEY_SSH_JUMP`, `HOMEY_SSH_TARGET`, and `HOMEY_TUNNEL_PORT` can override the default jump host, destination, and local port. This Mac workflow uses Docker Desktop's `host.docker.internal` address. No SSH or Homey service configuration is changed.
@@ -101,6 +107,6 @@ Disable the Lennox app in Homey to close its connections, then resume the existi
 
 ## Development and verification
 
-All dependency installation and official CLI validation run inside containers. See [VALIDATION.md](VALIDATION.md) for tested paths and boundaries. The installer Dockerfile runs the tests, Homey debug validation, and build before attempting any installation. The root AirGradient package excludes all of `homey-apps/`.
+All dependency installation and official CLI validation run inside containers. See [VALIDATION.md](VALIDATION.md) for tested paths and boundaries. The installer Dockerfile runs the tests, Homey debug validation, and build before attempting any installation.
 
 This project uses Luke Alonso's [lennoxapi](https://github.com/lukealonso/lennoxapi) client, declared MIT. See [NOTICE](NOTICE) and [LICENSE](LICENSE). The Homey app and protocol adapter are independent community work.

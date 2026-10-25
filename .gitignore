@@ -1,0 +1,16 @@
+# Dependencies and generated Homey output
+node_modules/
+.homeybuild/
+
+# Developer authentication and local settings
+.homey/
+.env
+.env.*
+!.env.example
+
+# Local archives, logs and editor/runtime metadata
+*.tgz
+*.log
+__pycache__/
+*.py[cod]
+.DS_Store

@@ -41,7 +41,10 @@ async function main() {
       assert(normalized.includes('assets/icon.svg'), 'Local app icon must be included');
       assert(normalized.some(file => file.startsWith('node_modules/lennoxapi/')));
       assert(normalized.includes('node_modules/undici/index.js'));
-      assert(!normalized.some(file => /^(test|scripts|\.homeybuild)\//.test(file)));
+      assert(!normalized.some(file => /^(test|scripts|\.homeybuild|\.github|\.git|\.homey)\//.test(file)));
+      for (const filename of ['.gitignore', '.dockerignore', 'Dockerfile', '.env']) {
+        assert(!normalized.includes(filename), `${filename} must not enter the installed app`);
+      }
       assert(!normalized.some(file => /^node_modules\/(sharp|homey-api|inquirer|dockerode)\//.test(file)));
       assert(!normalized.includes('node_modules/homey/bin/homey.mjs'));
       assert(archive.length < 5 * 1024 * 1024, 'Install archive must contain runtime dependencies only');
