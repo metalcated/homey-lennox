@@ -132,3 +132,66 @@ ssh -T foreman.gnet.com 'sudo -n ssh -T iot-mgmt python3 /opt/docker/homey/local
 ```
 
 The live apply/rollback/reapply cycle matched file and HTTP checksums without restarting the Homey server. Both Node 22 and Node 24 passed all 241 tests with the reviewed vendor fixture. Installation preserved the existing device and Flow definitions. The current live telemetry has been verified independently from the appearance fixture; no physical thermostat command was issued to force an animation.
+
+
+## Smoother activity motion layer
+
+The optional follow-up generator,
+[`scripts/patch-homey-13.5.3-activity-motion.cjs`](../scripts/patch-homey-13.5.3-activity-motion.cjs),
+changes only the activity stylesheet. The original activity generator and its
+checksums remain unchanged.
+
+Each solid wave travels linearly from `+4px` to `-4px` over 2.4 seconds. Its
+opacity reaches zero at both ends, hiding the loop reset, and stays fully
+visible through the middle half of the cycle. The second and third waves are
+staggered by `-0.4s` and `-0.8s`. Cooling keeps the reversed direction. The
+centered fan rotates linearly once per 2.4 seconds. Scoped `will-change` hints
+are removed under reduced motion, which freezes a visible static glyph.
+
+The actual-state subscriptions, glyph priority, read-only behavior, geometry,
+accessible labels and pointer handling are unchanged. This layer does not
+change the native dial, immediate target preview, command queue, capability
+writer, installed app or physical thermostat configuration.
+
+The generator accepts only the previous activity output:
+
+```text
+fde675312b7b0009e57b10ee75de531524a7f25ef1200efe4faf54bf2c83dd3a
+```
+
+Its reviewed output has SHA-256:
+
+```text
+36b6457bdb22bb9629e9395333db98964ec590160cebf5e61c4c34c459684640
+```
+
+```sh
+node scripts/patch-homey-13.5.3-activity-motion.cjs \
+  /absolute/path/controls-activity.js \
+  /absolute/path/controls-activity-motion.js
+```
+
+It requires exactly one previously reviewed renderer, checks the complete
+output as JavaScript ESM, and refuses existing output files, repeated
+application and unsupported input checksums. `renderActivity()` and
+`activityFixtureSvg()` expose the exact revised helper and CSS for isolated
+appearance checks without device commands.
+
+Deployment is a separate, checksum-guarded operation. Its rollback restores the
+previous activity bundle `fde675…`, retaining the original activity glyphs and
+all dial controls. Roll back this follow-up before removing the original
+activity layer; never overwrite either layer's backup or metadata.
+
+The deployed motion layer is managed separately in `/opt/docker/homey/local-patches/thermostat-motion-13.5.3`. Roll it back before rolling back the original activity layer:
+
+```sh
+ssh -T foreman.gnet.com 'sudo -n ssh -T iot-mgmt python3 /opt/docker/homey/local-patches/thermostat-motion-13.5.3/manage-homey-web-motion.py rollback'
+```
+
+Reapply its reviewed staged asset:
+
+```sh
+ssh -T foreman.gnet.com 'sudo -n ssh -T iot-mgmt python3 /opt/docker/homey/local-patches/thermostat-motion-13.5.3/manage-homey-web-motion.py apply --patched-file /opt/docker/homey/local-patches/thermostat-motion-13.5.3/index-LWSkNFnB.js.patched --patched-sha256 36b6457bdb22bb9629e9395333db98964ec590160cebf5e61c4c34c459684640'
+```
+
+The live motion-layer apply/rollback/reapply passed exact file and decoded HTTP checks without a server restart. Both supported Node runtimes passed all 248 tests. This presentation change does not reinstall or version-bump app 0.1.8.

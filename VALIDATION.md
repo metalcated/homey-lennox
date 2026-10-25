@@ -1,12 +1,18 @@
 # Lennox validation
 
+## Activity animation smoothness follow-up
+
+The CSS-only motion layer removes the visible wave reset by fading each path to zero opacity at both loop endpoints. It uses 2.4-second linear travel with staggered phases, opposite cooling direction, and a slower constant-speed fan. Reduced motion keeps static visible glyphs. App 0.1.8, telemetry, capability subscriptions, native radial code, drag, precision buttons, preview, and the write queue are unchanged.
+
+Node 22 and Node 24 each pass all **248 tests**, with the reviewed vendor bundle and zero skips. The separate activity and motion artifacts remain reproducible. The motion layer was applied, rolled back byte-for-byte to its predecessor, and reapplied with matching file/HTTP checksums and no Homey server restart. The browser fixture's computed styles confirmed the new timing and direction. The earlier live Heating observation and user feedback remain distinct from fixture-based motion verification.
+
 ## Version 0.1.8 actual activity and animated dial
 
 The complete suite passes **241/241 tests** under Node 22 and Node 24 with the reviewed vendor fixture and no skips. Official Homey debug validation, build, actual installation-archive verification, and rejected-upload handling pass. The installer image also built successfully from the standalone checkout. Tests cover literal fan reports, malformed and missing data, independent activity freshness, reconnects, unavailable/shutdown races, real capability subscriptions, reduced motion, and preservation of dragging, precision buttons, preview and the command queue.
 
 Version 0.1.8 was persistently installed on the existing Homey and independently reported running, enabled and not crashed. The paired device remained available, with its identity, settings, indicator choice, and Flow definition fingerprints preserved. The actual read-only telemetry reported fan stopped while Circulate remained selected, confirming that fan mode is separate from current fan operation. No thermostat target, HVAC mode, fan setting, or changeover-gap command was sent for this feature.
 
-The reviewed activity web layer was applied, rolled back to the exact preceding preview bundle, and reapplied. File and decoded HTTP checksums matched each time; the Homey server container identity, start time, and restart count remained unchanged. Browser fixtures using the exact activity helper showed all three animations; DOM checks confirmed running fan rotation and opposite wave directions. The desktop was locked during the live-page refresh attempt, so inspection of the deployed glyph in the user's browser is pending. Physical heating/cooling/fan cycles were not forced for validation. See [activity behavior and rollback](docs/HOMEY-WEB-ACTIVITY.md).
+The reviewed activity web layer was applied, rolled back to the exact preceding preview bundle, and reapplied. File and decoded HTTP checksums matched each time; the Homey server container identity, start time, and restart count remained unchanged. Browser fixtures using the exact activity helper showed all three animations; DOM checks confirmed running fan rotation and opposite wave directions. The desktop was initially locked. After the user unlocked it, the live Homey dial displayed red waves above the target while its operating state and accessible activity label reported Heating. The existing dial and precision buttons remained visible. The user reported that it worked and requested smoother motion; the follow-up CSS layer removes the visible reset. Cooling and fan visuals remain fixture-tested; no physical cycle was forced by the agent. See [activity behavior and rollback](docs/HOMEY-WEB-ACTIVITY.md).
 
 ## Standalone repository migration
 
