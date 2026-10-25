@@ -1,6 +1,6 @@
 # Lennox for Homey
 
-A native Homey SDK v3 app for Lennox iComfort thermostats with the compatible local LAN API. Targets Homey Pro and Homey Self-Hosted Server **12.9.0 or newer**. Version **0.1.8** is a private test release, not an App Store publication or a claim of Lennox certification.
+A native Homey SDK v3 app for Lennox iComfort thermostats with the compatible local LAN API. Targets Homey Pro and Homey Self-Hosted Server **12.9.0 or newer**. Version **0.1.9** is a private test release, not an App Store publication or a claim of Lennox certification.
 
 Source: [metalcated/homey-lennox](https://github.com/metalcated/homey-lennox). Report bugs and request features through [GitHub issues](https://github.com/metalcated/homey-lennox/issues).
 
@@ -62,6 +62,8 @@ On Homey 13.5.3, a privately installed app can show a blank brand circle even wh
 A static DHCP lease is recommended. Use Homey's Repair action to update an address; pairing identity is based on the serial number and zone, so an IP change does not create a different thermostat.
 
 ## Temperature dials and status indicators
+
+Version 0.1.9 keeps the current room temperature visible when both heating and cooling are Off. The app preserves the real measurement and its history, while the optional [read-only Off-temperature web view](docs/HOMEY-WEB-ACTIVITY.md#current-temperature-while-off) puts that reading in the center of a neutral dial with an Off label. The Off view has no target, drag handle, or temperature buttons. Returning to Heat, Cool, or Automatic restores the existing mode-specific controls. It does not turn the thermostat on or change either stored target. The native Homey mobile presentation has not been verified.
 
 Version 0.1.8 adds read-only fan activity telemetry and an optional [animated activity indicator](docs/HOMEY-WEB-ACTIVITY.md) above the native dial temperature. Heating and cooling use warm red and blue waves; when neither is running, a three-blade fan spins only while the thermostat reports its fan running. Selecting On or Circulate alone does not start the animation. Each activity field expires independently if it stops being reported, and an unavailable device shows no activity. Reduced-motion preferences keep the glyph static. This separately reversible Homey web patch preserves dragging and the small temperature buttons; the native Homey mobile interface is unchanged.
 

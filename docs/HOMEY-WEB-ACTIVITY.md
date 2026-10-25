@@ -195,3 +195,89 @@ ssh -T foreman.gnet.com 'sudo -n ssh -T iot-mgmt python3 /opt/docker/homey/local
 ```
 
 The live motion-layer apply/rollback/reapply passed exact file and decoded HTTP checks without a server restart. Both supported Node runtimes passed all 248 tests. This presentation change does not reinstall or version-bump app 0.1.8.
+
+
+## Current temperature while Off
+
+The optional
+[`scripts/patch-homey-13.5.3-off-temperature.cjs`](../scripts/patch-homey-13.5.3-off-temperature.cjs)
+adds a read-only current-temperature view when the Lennox thermostat is Off.
+The matching app **0.1.9** exposes its existing base `measure_temperature` as a
+thermostat component while Off and restores its sensor presentation in known
+active modes. No capability ID, history or Flow reference is replaced.
+
+The reviewed Homey renderer normally centers the target and always attaches a
+drag handle, even to a measurement-only component. The new Off view instead
+centers the actual base measurement in a neutral circle and labels it “Off”.
+It ignores any retained target, including a single-setpoint thermostat's base
+target. There is no drag handle, precision button, target selector or writable
+temperature callback in this view. The actual fan/activity overlay remains
+available without changing its smooth animation or telemetry semantics.
+
+The base measurement uses Homey's actual converted units and decimals. Missing,
+invalid or unavailable readings display an em dash instead of zero or an old
+target. During incomplete metadata, an exact Lennox component containing the
+base measurement without a selected target stays read-only and is labelled
+“Current temperature”; it does not falsely claim the thermostat is Off.
+
+All capability subscriptions and queue hooks remain unconditional. The existing
+mode-change context cancels unsent temperature batches. A retained callback from
+an earlier active dial also cannot enqueue a write while the current view is
+read-only, including single-setpoint systems with a preserved target. Known active modes
+return to the previous native dial, precision buttons and preview behavior.
+The reviewed native radial renderer and capability writer remain unchanged.
+Other vendors' thermostat views are outside this layer's scope.
+
+This generator accepts only the smooth-motion bundle:
+
+```text
+36b6457bdb22bb9629e9395333db98964ec590160cebf5e61c4c34c459684640
+```
+
+Its reviewed output has SHA-256:
+
+```text
+c9677f4eb4923de3963459b3d23f95cfb987c98c78678c468da2cdb37d29e47d
+```
+
+```sh
+node scripts/patch-homey-13.5.3-off-temperature.cjs \
+  /absolute/path/controls-activity-motion.js \
+  /absolute/path/controls-off-temperature.js
+```
+
+The generator replaces one reviewed renderer, validates complete JavaScript ESM
+syntax, and refuses unsupported inputs, duplicate fragments, repeated
+application and existing output files. `renderOffTemperature()` and
+`offTemperatureFixtureSvg()` accept `{ online, value, decimals, units, mode }`
+for isolated appearance checks without connecting to Homey or the thermostat.
+
+Deployment and rollback use
+[`scripts/manage-homey-web-off-temperature.py`](../scripts/manage-homey-web-off-temperature.py)
+with the unchanged deployment guards. The host directory is
+`/opt/docker/homey/local-patches/thermostat-off-temperature-13.5.3`.
+For an independent asset rollback, run on `iot-mgmt`:
+
+```sh
+sudo python3 /opt/docker/homey/local-patches/thermostat-off-temperature-13.5.3/manage-homey-web-off-temperature.py rollback
+```
+
+This restores the exact smooth-motion web asset above. It does not undo app
+0.1.9's capability metadata: the measurement-only component remains while Off,
+so the previous native renderer can show a target placeholder and smaller
+current reading. A retained single-setpoint target can also be grouped by
+Homey's native prepass. Reinstalling an older app alone does not explicitly
+reset the persisted measurement option; do not treat it as a complete UI
+rollback. Device history and Flow references remain intact. Keep every earlier
+layer's backup and metadata; roll back this asset layer before the motion or
+activity layers.
+
+
+The Off-temperature layer was validated with all 261 tests on Node 22 and Node 24,
+including the captured Homey grouping method and reviewed web bundle. Version
+0.1.9 was installed in place. Apply, exact rollback and reapply all matched the
+file and served checksums without a Homey server restart. The actual browser
+showed 72°F and an Off label in the neutral dial, with no target, handle or
+precision buttons; closing and reopening preserved it. An actual running-fan
+report still displayed the fan overlay. Physical mode transitions were not
+forced, and native mobile rendering remains unverified.
