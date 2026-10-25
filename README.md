@@ -1,10 +1,10 @@
 # Lennox for Homey
 
-A native Homey SDK v3 app for Lennox iComfort thermostats with the compatible local LAN API. Targets Homey Pro and Homey Self-Hosted Server **12.9.0 or newer**. Version **0.1.7** is a private test release, not an App Store publication or a claim of Lennox certification.
+A native Homey SDK v3 app for Lennox iComfort thermostats with the compatible local LAN API. Targets Homey Pro and Homey Self-Hosted Server **12.9.0 or newer**. Version **0.1.8** is a private test release, not an App Store publication or a claim of Lennox certification.
 
 Source: [metalcated/homey-lennox](https://github.com/metalcated/homey-lennox). Report bugs and request features through [GitHub issues](https://github.com/metalcated/homey-lennox/issues).
 
-This standalone repository retains app ID `com.metalcated.lennox`, version **0.1.7**, and the existing runtime behavior. The source move preserves the installed app, paired devices, settings, and existing installer authentication.
+This standalone repository retains app ID `com.metalcated.lennox` and the existing device identities. The source move preserves the installed app, paired devices, settings, and existing installer authentication.
 
 ## What it provides
 
@@ -62,6 +62,8 @@ On Homey 13.5.3, a privately installed app can show a blank brand circle even wh
 A static DHCP lease is recommended. Use Homey's Repair action to update an address; pairing identity is based on the serial number and zone, so an IP change does not create a different thermostat.
 
 ## Temperature dials and status indicators
+
+Version 0.1.8 adds read-only fan activity telemetry and an optional [animated activity indicator](docs/HOMEY-WEB-ACTIVITY.md) above the native dial temperature. Heating and cooling use warm red and blue waves; when neither is running, a three-blade fan spins only while the thermostat reports its fan running. Selecting On or Circulate alone does not start the animation. Each activity field expires independently if it stops being reported, and an unavailable device shows no activity. Reduced-motion preferences keep the glyph static. This separately reversible Homey web patch preserves dragging and the small temperature buttons; the native Homey mobile interface is unchanged.
 
 Version 0.1.3 corrected the native thermostat names required by Homey. Version 0.1.4 makes those derived controls follow the selected mode: **Heat** exposes only Heating target, **Cool** only Cooling target, **Automatic** both, and **Off** neither. Changing mode does not erase the thermostat's stored opposite target. Existing custom capability IDs remain for Flow actions and Insights history. Reopen the device control after an app update.
 

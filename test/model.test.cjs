@@ -43,7 +43,7 @@ test('normalization preserves Celsius readings and translates thermostat state w
   const { system, zone } = fixture();
   assert.deepEqual(normalizeZone(system, zone), {
     measure_temperature: 22, measure_humidity: 43, thermostat_mode: 'auto',
-    heat_target: 20, cool_target: 25, hvac_state: 'idle', fan_mode: 'auto',
+    heat_target: 20, cool_target: 25, hvac_state: 'idle', fan_mode: 'auto', fan_running: null,
     'target_temperature.heat': 20, 'target_temperature.cool': 25,
     'measure_temperature.heat': 22, 'measure_temperature.cool': 22,
     'thermostat_mode.heat': 'heat', 'thermostat_mode.cool': 'cool',

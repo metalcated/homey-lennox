@@ -1,5 +1,13 @@
 # Lennox validation
 
+## Version 0.1.8 actual activity and animated dial
+
+The complete suite passes **241/241 tests** under Node 22 and Node 24 with the reviewed vendor fixture and no skips. Official Homey debug validation, build, actual installation-archive verification, and rejected-upload handling pass. The installer image also built successfully from the standalone checkout. Tests cover literal fan reports, malformed and missing data, independent activity freshness, reconnects, unavailable/shutdown races, real capability subscriptions, reduced motion, and preservation of dragging, precision buttons, preview and the command queue.
+
+Version 0.1.8 was persistently installed on the existing Homey and independently reported running, enabled and not crashed. The paired device remained available, with its identity, settings, indicator choice, and Flow definition fingerprints preserved. The actual read-only telemetry reported fan stopped while Circulate remained selected, confirming that fan mode is separate from current fan operation. No thermostat target, HVAC mode, fan setting, or changeover-gap command was sent for this feature.
+
+The reviewed activity web layer was applied, rolled back to the exact preceding preview bundle, and reapplied. File and decoded HTTP checksums matched each time; the Homey server container identity, start time, and restart count remained unchanged. Browser fixtures using the exact activity helper showed all three animations; DOM checks confirmed running fan rotation and opposite wave directions. The desktop was locked during the live-page refresh attempt, so inspection of the deployed glyph in the user's browser is pending. Physical heating/cooling/fan cycles were not forced for validation. See [activity behavior and rollback](docs/HOMEY-WEB-ACTIVITY.md).
+
 ## Standalone repository migration
 
 On October 25, 2026, the Lennox source moved into its own [metalcated/homey-lennox repository](https://github.com/metalcated/homey-lennox) with its application history retained. The move keeps app ID `com.metalcated.lennox`, version **0.1.7**, and runtime behavior unchanged. It does not reinstall the app or change live Homey services. The earlier sections below preserve the validation evidence from the original source location. New bugs and feature requests belong in the [dedicated issue tracker](https://github.com/metalcated/homey-lennox/issues).

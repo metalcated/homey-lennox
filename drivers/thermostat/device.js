@@ -23,7 +23,7 @@ const ADJUSTMENTS = {
   target_increase: { target: 'target', direction: 1 },
 };
 const SUPPORTED_CAPABILITIES = new Set([
-  'measure_temperature', 'measure_humidity', 'hvac_state', 'measure_temperature.heat', 'measure_temperature.cool',
+  'measure_temperature', 'measure_humidity', 'hvac_state', 'fan_running', 'measure_temperature.heat', 'measure_temperature.cool',
   ...DIRECTION_MODES, ...Object.keys(CAPABILITY_COMMANDS), ...Object.keys(ADJUSTMENTS),
 ]);
 
@@ -36,12 +36,19 @@ class LennoxDevice extends Homey.Device {
     this._capabilityOptions = new Map();
     for (const capability of [...Object.keys(CAPABILITY_COMMANDS), ...DIRECTION_MODES, ...Object.keys(ADJUSTMENTS)]) this._registerCommandListener(capability);
     try {
+      await this._clearFanActivity();
       await this.setUnavailable('Connecting to the thermostat…');
       await this._subscribe(validateHost(this.getSetting('host')));
     } catch (error) {
       await this.setUnavailable(error.message);
       this.error('Thermostat subscription failed:', error.message);
     }
+  }
+
+  async _clearFanActivity() {
+    if (!this.hasCapability('fan_running')) return;
+    try { await this.setCapabilityValue('fan_running', null); }
+    catch (error) { this.error('Could not clear fan activity:', error.message); }
   }
 
   _identity() {
@@ -170,7 +177,11 @@ class LennoxDevice extends Homey.Device {
         if (!this._closed && this._generation === generation) await this.setAvailable();
       });
     }, (message) => {
-      enqueue(async () => this.setUnavailable(message || 'Cannot reach the thermostat. Retrying automatically.'));
+      enqueue(async () => {
+        await this._clearFanActivity();
+        if (this._closed || this._generation !== generation) return;
+        await this.setUnavailable(message || 'Cannot reach the thermostat. Retrying automatically.');
+      });
     });
     if (typeof unsubscribe !== 'function') throw new Error('Thermostat session could not be created.');
     const previous = this._unsubscribe;
@@ -252,6 +263,7 @@ class LennoxDevice extends Homey.Device {
       this._unsubscribe = undefined;
     }
     await this._updates;
+    await this._clearFanActivity();
   }
 
   async onDeleted() {

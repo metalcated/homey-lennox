@@ -1,6 +1,6 @@
 {
   "id": "com.metalcated.lennox",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "compatibility": ">=12.9.0",
   "runtime": "nodejs",
   "sdk": 3,
@@ -108,6 +108,14 @@
         { "id": "unknown", "title": { "en": "Unknown" } }
       ]
     },
+    "fan_running": {
+      "type": "boolean",
+      "title": { "en": "Fan running" },
+      "getable": true,
+      "setable": false,
+      "insights": false,
+      "uiComponent": null
+    },
     "fan_mode": {
       "type": "enum",
       "title": { "en": "Fan mode" },
@@ -128,7 +136,7 @@
       "class": "thermostat",
       "platforms": ["local"],
       "connectivity": ["lan"],
-      "capabilities": ["measure_temperature", "thermostat_mode", "hvac_state"],
+      "capabilities": ["measure_temperature", "thermostat_mode", "hvac_state", "fan_running"],
       "capabilitiesOptions": {
         "measure_temperature": { "decimals": 1 },
         "target_temperature": { "step": 0.5 }
